@@ -156,7 +156,6 @@
       color: #cbd5e1;
       margin-bottom: 0.75rem;
     }
-
     .variables-section-label {
       font-size: 0.75rem;
       font-weight: 600;
@@ -168,7 +167,6 @@
       align-items: center;
       gap: 0.5rem;
     }
-
     .badge {
       font-size: 0.7rem;
       padding: 0.15rem 0.4rem;
@@ -207,17 +205,14 @@
       display: block;
       margin-bottom: 0.2rem;
     }
-
     .var-label {
       color: #94a3b8;
       font-size: 0.75rem;
       line-height: 1.4;
     }
-
     .option-group {
       margin-bottom: 1.25rem;
     }
-
     .option-label {
       font-size: 0.875rem;
       font-weight: 500;
@@ -225,7 +220,6 @@
       margin-bottom: 0.5rem;
       display: block;
     }
-
     .toggle {
       display: flex;
       align-items: center;
@@ -237,11 +231,9 @@
       cursor: pointer;
       transition: all 0.15s ease;
     }
-
     .toggle:hover {
       border-color: #475569;
     }
-
     .toggle-switch {
       width: 40px;
       height: 22px;
@@ -250,7 +242,6 @@
       position: relative;
       transition: all 0.2s ease;
     }
-
     .toggle-switch::after {
       content: '';
       position: absolute;
@@ -262,35 +253,28 @@
       left: 2px;
       transition: all 0.2s ease;
     }
-
     .toggle input {
       display: none;
     }
-
     .toggle input:checked + .toggle-switch {
       background: #6366f1;
     }
-
     .toggle input:checked + .toggle-switch::after {
       left: 20px;
     }
-
     .toggle-label {
       flex: 1;
     }
-
     .toggle-title {
       font-size: 0.875rem;
       font-weight: 500;
       color: #e2e8f0;
       margin-bottom: 0.15rem;
     }
-
     .toggle-desc {
       font-size: 0.8rem;
       color: #94a3b8;
     }
-
     select {
       width: 100%;
       padding: 0.75rem;
@@ -301,12 +285,10 @@
       font-size: 0.9rem;
       cursor: pointer;
     }
-
     select:focus {
       outline: none;
       border-color: #6366f1;
     }
-
     input[type="text"] {
       width: 100%;
       padding: 0.75rem;
@@ -316,23 +298,19 @@
       color: #e2e8f0;
       font-size: 0.9rem;
     }
-
     input[type="text"]:focus {
       outline: none;
       border-color: #6366f1;
     }
-
     .advanced-options {
       display: none;
       margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px solid #334155;
     }
-
     .advanced-options.show {
       display: block;
     }
-
     .advanced-toggle-btn {
       width: 100%;
       padding: 0.75rem;
@@ -349,19 +327,16 @@
       gap: 0.5rem;
       margin-bottom: 1rem;
     }
-
     .advanced-toggle-btn:hover {
       background: #0f172a;
       color: #e2e8f0;
       border-color: #475569;
     }
-
     .advanced-toggle-btn::after {
       content: '▼';
       font-size: 0.7rem;
       transition: transform 0.2s ease;
     }
-
     .advanced-toggle-btn.active::after {
       transform: rotate(180deg);
     }
@@ -425,7 +400,6 @@
       color: #64748b;
       font-size: 0.9rem;
     }
-
     @media (max-width: 768px) {
       .editor-layout {
         grid-template-columns: 1fr;
@@ -440,7 +414,6 @@
   <div class="container">
     <h1>Prompt Template Bookmark</h1>
     <p class="subtitle">Create smart bookmarks that inject page context into your GPT prompt templates</p>
-
     <div class="section">
       <h2 class="section-title">Build Your Prompt Template</h2>
       
@@ -469,7 +442,6 @@
         </div>
       </div>
     </div>
-
     <div class="section">
       <h2 class="section-title">Generate Bookmark</h2>
       
@@ -477,9 +449,7 @@
         <label class="option-label" for="bookmarkName">Bookmark Name</label>
         <input type="text" id="bookmarkName" value="GPT prompt" placeholder="Bookmark name">
       </div>
-
       <button class="advanced-toggle-btn" id="advancedToggle">Advanced Options</button>
-
       <div class="advanced-options" id="advancedOptions">
         <div class="option-group">
           <label class="option-label">Model Selection</label>
@@ -492,7 +462,6 @@
             <option value="o1-mini">o1-mini</option>
           </select>
         </div>
-
         <div class="option-group">
           <label class="toggle">
             <input type="checkbox" id="temporaryChat">
@@ -503,26 +472,13 @@
             </div>
           </label>
         </div>
-
-        <div class="option-group">
-          <label class="toggle">
-            <input type="checkbox" id="newWindow">
-            <div class="toggle-switch"></div>
-            <div class="toggle-label">
-              <div class="toggle-title">Open in New Window</div>
-              <div class="toggle-desc">Open ChatGPT in a new window (new tab is default)</div>
-            </div>
-          </label>
-        </div>
       </div>
-
       <button class="generate-btn" id="generateBtn">Generate bookmark template</button>
       <div class="result-area" id="resultArea">
         <span class="placeholder-text">Your bookmark will appear here</span>
       </div>
     </div>
   </div>
-
   <script>
     function escapeHtml(str){
       return String(str)
@@ -532,14 +488,11 @@
         .replace(/"/g,'&quot;')
         .replace(/'/g,'&#39;');
     }
-
     const AUTO_VARS = [
       { key: 'page_url', label: 'The full URL of the current page' },
       { key: 'highlighted_text', label: 'Highlighted text on the current page' }
     ];
-
     let lastEditorRange = null;
-
     const editor = document.getElementById('editor');
     const autoVariablesList = document.getElementById('autoVariables');
     const generateBtn = document.getElementById('generateBtn');
@@ -547,12 +500,10 @@
     const resultArea = document.getElementById('resultArea');
     const advancedToggle = document.getElementById('advancedToggle');
     const advancedOptions = document.getElementById('advancedOptions');
-
     advancedToggle.addEventListener('click', () => {
       advancedOptions.classList.toggle('show');
       advancedToggle.classList.toggle('active');
     });
-
     function saveEditorSelection() {
       const sel = window.getSelection();
       if (!sel || sel.rangeCount === 0) return;
@@ -561,12 +512,10 @@
         lastEditorRange = r.cloneRange();
       }
     }
-
     document.addEventListener('selectionchange', saveEditorSelection);
     ['keyup','mouseup','input','focus'].forEach(evt => {
       editor.addEventListener(evt, saveEditorSelection);
     });
-
     function renderAutoVariables() {
       autoVariablesList.innerHTML = AUTO_VARS.map(v =>
         `<div class="var-btn" data-key="${v.key}">
@@ -574,14 +523,12 @@
           <span class="var-label">${v.label}</span>
         </div>`
       ).join('');
-
       autoVariablesList.querySelectorAll('.var-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           insertPlaceholder(btn.dataset.key);
         });
       });
     }
-
     function insertPlaceholder(key) {
       const selection = window.getSelection();
       let range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
@@ -591,7 +538,6 @@
         selection.removeAllRanges();
         selection.addRange(range);
       }
-
       const chip = document.createElement('span');
       chip.className = 'placeholder-chip';
       chip.contentEditable = 'false';
@@ -628,14 +574,12 @@
       
       editor.focus();
     }
-
     clearBtn.addEventListener('click', () => {
       editor.innerHTML = '';
       resultArea.innerHTML = '<span class="placeholder-text">Your bookmark will appear here</span>';
       resultArea.classList.remove('has-result');
       editor.focus();
     });
-
     function getTemplateText() {
       let text = '';
       editor.childNodes.forEach(node => {
@@ -651,19 +595,15 @@
       });
       return text;
     }
-
     function generateBookmarklet() {
       const templateValue = getTemplateText().trim();
       if (!templateValue) {
         alert('Please enter a prompt template first!');
         return;
       }
-
       const tplJSON = JSON.stringify(templateValue);
       const temporaryChat = document.getElementById('temporaryChat').checked;
       const model = document.getElementById('modelSelect').value;
-      const newWindow = document.getElementById('newWindow').checked;
-
       const code = `(function(){
   try{
     const template = ${tplJSON};
@@ -674,7 +614,6 @@
       page_url: url,
       highlighted_text: selection
     };
-
     let prompt = template;
     for (const k in vars) {
       const re = new RegExp('\\\\{\\\\{'+k+'\\\\}\\\\}','g');
@@ -685,18 +624,15 @@
     ${temporaryChat ? "u += '&temporary-chat=true';" : ""}
     ${model !== 'auto' ? "u += '&model=" + model + "';" : ""}
     
-    ${newWindow ? "window.open(u, '_blank', 'width=1200,height=800');" : "window.open(u, '_blank');"}
+    window.open(u, '_blank');
   }catch(e){ alert('Error: '+e); }
 })();`;
-
       const href = "javascript:" + encodeURIComponent(code);
       const name = (document.getElementById('bookmarkName')?.value || 'GPT prompt').trim();
       resultArea.innerHTML = `<a class="bookmarklet-link" href="${href}" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></a>`;
       resultArea.classList.add('has-result');
     }
-
     generateBtn.addEventListener('click', generateBookmarklet);
-
     renderAutoVariables();
   </script>
 </body>
