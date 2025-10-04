@@ -13,7 +13,7 @@ With these bookmark templates, you can highlight text or capture the current pag
   - `{{highlighted_text}}` → any selected text
 - ⚙️ Customization options:
   - Bookmark name
-  - Model selection (GPT-4, GPT-3.5, o1, etc.)
+  - Model selection (GPT-5, GPT-4.1, o3, etc.)
   - Temporary chat toggle
   - Open in new window or tab
 - 📄 100% static — no backend, just a single HTML file
