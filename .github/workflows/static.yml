@@ -4,7 +4,7 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["copilot/fix-b2ffed09-69d8-4691-b667-9d709f9701b0"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
