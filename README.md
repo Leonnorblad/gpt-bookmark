@@ -21,11 +21,11 @@ Once deployed, your site will be available at:
 
 ### Editing the Content
 
-- The main HTML file is `code.html`
+- The main HTML file is `index.html`
 - Edit this file to customize your website content
 - Push changes to the `main` branch to update the live site
 
 ### File Structure
 
-- `code.html` - Main HTML file for your website
+- `index.html` - Main HTML file for your website
 - `.github/workflows/static.yml` - GitHub Actions workflow for deployment
