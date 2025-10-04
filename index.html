@@ -464,11 +464,13 @@
       border: 1px solid #334155;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       z-index: 100;
-      min-width: 600px;
+      width: 600px;
+      height: 500px;
+      flex-direction: column;
     }
     
     .demo-content.show {
-      display: block;
+      display: flex;
     }
     
     .intro-container {
@@ -477,13 +479,17 @@
       border-radius: 8px;
       border: 1px solid #334155;
       overflow: hidden;
-      margin-bottom: 0.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     
     .intro-container img {
       width: 100%;
       height: auto;
       display: block;
+      flex: 1;
+      object-fit: contain;
     }
     
     .intro-caption {
@@ -493,6 +499,7 @@
       font-size: 0.8rem;
       color: #94a3b8;
       text-align: center;
+      flex-shrink: 0;
     }
     
     .intro-nav {
@@ -502,6 +509,7 @@
       padding: 0.75rem;
       background: #0f172a;
       border-top: 1px solid #334155;
+      flex-shrink: 0;
     }
     
     .intro-nav-btn {
@@ -553,6 +561,31 @@
     
     .step-dot.active {
       background: #6366f1;
+    }
+    
+    /* Mobile responsiveness for demo content */
+    @media (max-width: 768px) {
+      .demo-content {
+        width: calc(100vw - 2rem);
+        height: 400px;
+        right: 1rem;
+        left: 1rem;
+      }
+      
+      .intro-nav {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+      
+      .intro-nav-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .intro-step-indicator {
+        order: -1;
+      }
     }
     
     .demo-steps {
@@ -643,7 +676,7 @@
             <div class="intro-step-indicator">
               <div class="step-dot active" data-step="0"></div>
               <div class="step-dot" data-step="1"></div>
-              <span id="stepText">Step 1 of 2</span>
+              <div class="step-dot" data-step="2"></div>
             </div>
             
             <button class="intro-nav-btn" id="nextBtn">
@@ -754,9 +787,20 @@
       advancedToggle.classList.toggle('active');
     });
     
-    demoToggle.addEventListener('click', () => {
+    demoToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       demoContent.classList.toggle('show');
       demoToggle.classList.toggle('active');
+    });
+    
+    // Close demo when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!demoContent.contains(e.target) && !demoToggle.contains(e.target)) {
+        demoContent.classList.remove('show');
+        demoToggle.classList.remove('active');
+        // Reset to step 1 when closed
+        updateIntroStep(0);
+      }
     });
     
     // Intro navigation functionality
@@ -765,16 +809,19 @@
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const stepDots = document.querySelectorAll('.step-dot');
-    const stepText = document.getElementById('stepText');
     
     const introSteps = [
       {
         image: 'intro1.png',
-        caption: 'Step 1: Create your prompt template with placeholders.'
+        caption: 'Step 1: Craft your prompt template with placeholders.'
       },
       {
         image: 'intro2.gif',
-        caption: 'Step 2: When you click the bookmark, it automatically fills ChatGPT with your page URL and selected text.'
+        caption: 'Step 2: Click "Generate bookmark" and drag it to your bookmarks bar.'
+      },
+      {
+        image: 'intro3.gif',
+        caption: 'Step 3: Click the bookmark on any page to open ChatGPT with your prompt filled in automatically.'
       }
     ];
     
@@ -786,7 +833,6 @@
       
       introImage.src = stepData.image;
       introCaption.textContent = stepData.caption;
-      stepText.textContent = `Step ${step + 1} of ${introSteps.length}`;
       
       // Update step dots
       stepDots.forEach((dot, index) => {
