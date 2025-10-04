@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt Bookmark Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      background: #0f172a;
+      color: #e2e8f0; 
+      margin: 0; 
+      padding: 1rem; 
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem 0;
+    }
+    h1 { 
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: #f1f5f9;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    
+    .section {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #334155;
+    }
+    
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin: 0 0 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    
+    .editor-wrapper {
+      position: relative;
+    }
+    
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    
+    .editor-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+    
+    .clear-btn {
+      padding: 0.5rem 0.875rem;
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+    .clear-btn:hover {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+    
+    .editor-container {
+      position: relative;
+      min-height: 200px;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      cursor: text;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    .editor-container:focus {
+      outline: none;
+      border-color: #6366f1;
+      background: #1e293b;
+    }
+    
+    .editor-container:empty:before {
+      content: attr(data-placeholder);
+      color: #64748b;
+      pointer-events: none;
+    }
+    
+    .placeholder-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff;
+      padding: 0.08rem 0.4rem;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.1;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    
+    .placeholder-chip:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+    
+    .placeholder-chip::after {
+      content: '×';
+      margin-left: 0.15rem;
+      opacity: 0.7;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .variables-panel {
+      position: sticky;
+      top: 1rem;
+    }
+    
+    .variables-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.75rem;
+    }
+
+    .variables-section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+    }
+    
+    .variable-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .var-btn { 
+      cursor: pointer; 
+      padding: 0.5rem;
+      border-radius: 8px; 
+      border: 1px solid #334155;
+      background: #0f172a;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+    .var-btn:hover {
+      background: #1e293b;
+      border-color: #6366f1;
+    }
+    .var-btn:active {
+      transform: scale(0.98);
+    }
+    .var-code { 
+      color: #818cf8; 
+      font-weight: 600;
+      font-size: 0.8rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .var-label {
+      color: #94a3b8;
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .option-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .option-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .toggle:hover {
+      border-color: #475569;
+    }
+
+    .toggle-switch {
+      width: 40px;
+      height: 22px;
+      background: #334155;
+      border-radius: 11px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .toggle input {
+      display: none;
+    }
+
+    .toggle input:checked + .toggle-switch {
+      background: #6366f1;
+    }
+
+    .toggle input:checked + .toggle-switch::after {
+      left: 20px;
+    }
+
+    .toggle-label {
+      flex: 1;
+    }
+
+    .toggle-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      margin-bottom: 0.15rem;
+    }
+
+    .toggle-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    .advanced-options {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #334155;
+    }
+
+    .advanced-options.show {
+      display: block;
+    }
+
+    .advanced-toggle-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .advanced-toggle-btn:hover {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    .advanced-toggle-btn::after {
+      content: '▼';
+      font-size: 0.7rem;
+      transition: transform 0.2s ease;
+    }
+
+    .advanced-toggle-btn.active::after {
+      transform: rotate(180deg);
+    }
+    
+    .generate-btn { 
+      width: 100%;
+      background: #6366f1;
+      color: #fff; 
+      padding: 0.875rem 1.5rem; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.15s ease;
+    }
+    .generate-btn:hover { 
+      background: #4f46e5;
+    }
+    .generate-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .result-area {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 2px dashed #334155;
+      text-align: center;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .result-area.has-result {
+      border-color: #6366f1;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    }
+    
+    .bookmarklet-link { 
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #6366f1;
+      color: #fff; 
+      padding: 0.875rem 1.5rem; 
+      border-radius: 8px; 
+      text-decoration: none; 
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.15s ease;
+    }
+    .bookmarklet-link:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+    
+    .placeholder-text {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+      .variables-panel {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Prompt Template Bookmark</h1>
+    <p class="subtitle">Create smart bookmarks that inject page context into your GPT prompt templates</p>
+
+    <div class="section">
+      <h2 class="section-title">Build Your Prompt Template</h2>
+      
+      <div class="editor-layout">
+        <div class="editor-wrapper">
+          <div class="editor-header">
+            <span class="editor-label">Your Prompt</span>
+            <button class="clear-btn" id="clearBtn">Clear</button>
+          </div>
+          <div 
+            id="editor" 
+            class="editor-container" 
+            contenteditable="true"
+            data-placeholder="Type your prompt or click variables to insert them..."
+          ></div>
+        </div>
+        
+        <div class="variables-panel">
+          <div class="variables-title">Click to Insert</div>
+          
+          <div class="variables-section-label">
+            <span>Variables</span>
+            <span class="badge">Auto</span>
+          </div>
+          <div class="variable-list" id="autoVariables"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Generate Bookmark</h2>
+      
+      <div class="option-group">
+        <label class="option-label" for="bookmarkName">Bookmark Name</label>
+        <input type="text" id="bookmarkName" value="GPT prompt" placeholder="Bookmark name">
+      </div>
+
+      <button class="advanced-toggle-btn" id="advancedToggle">Advanced Options</button>
+
+      <div class="advanced-options" id="advancedOptions">
+        <div class="option-group">
+          <label class="option-label">Model Selection</label>
+          <select id="modelSelect">
+            <option value="auto">Auto (Default)</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4">GPT-4</option>
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            <option value="o1">o1</option>
+            <option value="o1-mini">o1-mini</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label class="toggle">
+            <input type="checkbox" id="temporaryChat">
+            <div class="toggle-switch"></div>
+            <div class="toggle-label">
+              <div class="toggle-title">Temporary Chat</div>
+              <div class="toggle-desc">Start a temporary chat</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="option-group">
+          <label class="toggle">
+            <input type="checkbox" id="newWindow">
+            <div class="toggle-switch"></div>
+            <div class="toggle-label">
+              <div class="toggle-title">Open in New Window</div>
+              <div class="toggle-desc">Open ChatGPT in a new window (new tab is default)</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn">Generate bookmark template</button>
+      <div class="result-area" id="resultArea">
+        <span class="placeholder-text">Your bookmark will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    const AUTO_VARS = [
+      { key: 'page_url', label: 'The full URL of the current page' },
+      { key: 'highlighted_text', label: 'Highlighted text on the current page' }
+    ];
+
+    let lastEditorRange = null;
+
+    const editor = document.getElementById('editor');
+    const autoVariablesList = document.getElementById('autoVariables');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultArea = document.getElementById('resultArea');
+    const advancedToggle = document.getElementById('advancedToggle');
+    const advancedOptions = document.getElementById('advancedOptions');
+
+    advancedToggle.addEventListener('click', () => {
+      advancedOptions.classList.toggle('show');
+      advancedToggle.classList.toggle('active');
+    });
+
+    function saveEditorSelection() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return;
+      const r = sel.getRangeAt(0);
+      if (editor.contains(r.commonAncestorContainer)) {
+        lastEditorRange = r.cloneRange();
+      }
+    }
+
+    document.addEventListener('selectionchange', saveEditorSelection);
+    ['keyup','mouseup','input','focus'].forEach(evt => {
+      editor.addEventListener(evt, saveEditorSelection);
+    });
+
+    function renderAutoVariables() {
+      autoVariablesList.innerHTML = AUTO_VARS.map(v =>
+        `<div class="var-btn" data-key="${v.key}">
+          <span class="var-code">${v.key}</span>
+          <span class="var-label">${v.label}</span>
+        </div>`
+      ).join('');
+
+      autoVariablesList.querySelectorAll('.var-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          insertPlaceholder(btn.dataset.key);
+        });
+      });
+    }
+
+    function insertPlaceholder(key) {
+      const selection = window.getSelection();
+      let range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+      
+      if (!(range && editor.contains(range.commonAncestorContainer)) && lastEditorRange) {
+        range = lastEditorRange.cloneRange();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
+      const chip = document.createElement('span');
+      chip.className = 'placeholder-chip';
+      chip.contentEditable = 'false';
+      chip.textContent = key;
+      chip.dataset.key = key;
+      
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
+        chip.remove();
+        editor.focus();
+      });
+      
+      if (range && editor.contains(range.commonAncestorContainer)) {
+        range.deleteContents();
+        range.insertNode(chip);
+        const spacer = document.createTextNode('\u200A');
+        chip.parentNode.insertBefore(spacer, chip.nextSibling);
+        range.setStartAfter(spacer);
+        range.setEndAfter(spacer);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        lastEditorRange = range.cloneRange();
+      } else {
+        editor.appendChild(chip);
+        const spacer = document.createTextNode('\u200A');
+        editor.appendChild(spacer);
+        const r = document.createRange();
+        r.setStartAfter(spacer);
+        r.setEndAfter(spacer);
+        selection.removeAllRanges();
+        selection.addRange(r);
+        lastEditorRange = r.cloneRange();
+      }
+      
+      editor.focus();
+    }
+
+    clearBtn.addEventListener('click', () => {
+      editor.innerHTML = '';
+      resultArea.innerHTML = '<span class="placeholder-text">Your bookmark will appear here</span>';
+      resultArea.classList.remove('has-result');
+      editor.focus();
+    });
+
+    function getTemplateText() {
+      let text = '';
+      editor.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          text += node.textContent;
+        } else if (node.classList && node.classList.contains('placeholder-chip')) {
+          text += `{{${node.dataset.key}}}`;
+        } else if (node.nodeName === 'BR') {
+          text += '\n';
+        } else if (node.nodeName === 'DIV') {
+          text += '\n' + node.textContent;
+        }
+      });
+      return text;
+    }
+
+    function generateBookmarklet() {
+      const templateValue = getTemplateText().trim();
+      if (!templateValue) {
+        alert('Please enter a prompt template first!');
+        return;
+      }
+
+      const tplJSON = JSON.stringify(templateValue);
+      const temporaryChat = document.getElementById('temporaryChat').checked;
+      const model = document.getElementById('modelSelect').value;
+      const newWindow = document.getElementById('newWindow').checked;
+
+      const code = `(function(){
+  try{
+    const template = ${tplJSON};
+    const url = window.location.href;
+    const selection = window.getSelection().toString();
+    
+    const vars = {
+      page_url: url,
+      highlighted_text: selection
+    };
+
+    let prompt = template;
+    for (const k in vars) {
+      const re = new RegExp('\\\\{\\\\{'+k+'\\\\}\\\\}','g');
+      prompt = prompt.replace(re, String(vars[k] || ''));
+    }
+    
+    let u = 'https://chatgpt.com/?q='+encodeURIComponent(prompt);
+    ${temporaryChat ? "u += '&temporary-chat=true';" : ""}
+    ${model !== 'auto' ? "u += '&model=" + model + "';" : ""}
+    
+    ${newWindow ? "window.open(u, '_blank', 'width=1200,height=800');" : "window.open(u, '_blank');"}
+  }catch(e){ alert('Error: '+e); }
+})();`;
+
+      const href = "javascript:" + encodeURIComponent(code);
+      const name = (document.getElementById('bookmarkName')?.value || 'GPT prompt').trim();
+      resultArea.innerHTML = `<a class="bookmarklet-link" href="${href}" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></a>`;
+      resultArea.classList.add('has-result');
+    }
+
+    generateBtn.addEventListener('click', generateBookmarklet);
+
+    renderAutoVariables();
+  </script>
+</body>
+</html>
