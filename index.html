@@ -20,10 +20,17 @@
       margin: 0 auto;
       padding: 1rem 0;
     }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
     h1 { 
       font-size: 1.75rem;
       font-weight: 700;
-      margin: 0 0 0.5rem 0;
+      margin: 0;
       color: #f1f5f9;
     }
     .subtitle {
@@ -405,6 +412,201 @@
       color: #64748b;
       font-size: 0.9rem;
     }
+    
+    /* Demo GIF Section Styles */
+    .demo-section {
+      position: relative;
+    }
+    
+    .demo-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      background: transparent;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-decoration: none;
+    }
+    
+    .demo-toggle:hover {
+      border-color: #475569;
+      color: #e2e8f0;
+      background: #1e293b;
+    }
+    
+    .demo-icon {
+      font-size: 0.65rem;
+    }
+    
+    .demo-arrow {
+      font-size: 0.65rem;
+      transition: transform 0.2s ease;
+    }
+    
+    .demo-toggle.active .demo-arrow {
+      transform: rotate(180deg);
+    }
+    
+    .demo-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 0.5rem;
+      border: 1px solid #334155;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      min-width: 600px;
+    }
+    
+    .demo-content.show {
+      display: block;
+    }
+    
+    .intro-container {
+      position: relative;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    
+    .intro-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    .intro-caption {
+      padding: 0.75rem;
+      background: #0f172a;
+      border-top: 1px solid #334155;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+    
+    .intro-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: #0f172a;
+      border-top: 1px solid #334155;
+    }
+    
+    .intro-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      background: transparent;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    
+    .intro-nav-btn:hover {
+      border-color: #475569;
+      color: #e2e8f0;
+      background: #1e293b;
+    }
+    
+    .intro-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .intro-nav-btn:disabled:hover {
+      border-color: #334155;
+      color: #94a3b8;
+      background: transparent;
+    }
+    
+    .intro-step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #334155;
+      transition: background 0.15s ease;
+    }
+    
+    .step-dot.active {
+      background: #6366f1;
+    }
+    
+    .demo-steps {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #334155;
+    }
+    
+    .demo-steps-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.75rem;
+    }
+    
+    .demo-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+    
+    .demo-step:hover {
+      background: #1e293b;
+    }
+    
+    .demo-step:last-child {
+      margin-bottom: 0;
+    }
+    
+    .step-number {
+      width: 20px;
+      height: 20px;
+      background: #6366f1;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .step-text {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    
     @media (max-width: 768px) {
       .editor-layout {
         grid-template-columns: 1fr;
@@ -417,8 +619,44 @@
 </head>
 <body>
   <div class="container">
-    <h1>BookmarkGPT</h1>
+    <div class="header">
+      <h1>BookmarkGPT</h1>
+      <div class="demo-section">
+        <button class="demo-toggle" id="demoToggle">
+          <span class="demo-icon">ℹ</span>
+          <span>More info</span>
+          <span class="demo-arrow">▼</span>
+        </button>
+        
+        <div class="demo-content" id="demoContent">
+          <div class="intro-container">
+            <img id="introImage" src="intro1.png" alt="BookmarkGPT Intro" />
+            <div class="intro-caption" id="introCaption">Step 1: Create your prompt template with placeholders</div>
+          </div>
+          
+          <div class="intro-nav">
+            <button class="intro-nav-btn" id="prevBtn" disabled>
+              <span>←</span>
+              <span>Previous</span>
+            </button>
+            
+            <div class="intro-step-indicator">
+              <div class="step-dot active" data-step="0"></div>
+              <div class="step-dot" data-step="1"></div>
+              <span id="stepText">Step 1 of 2</span>
+            </div>
+            
+            <button class="intro-nav-btn" id="nextBtn">
+              <span>Next</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <p class="subtitle">Trun your GPT template into a bookmark with pre-filled placeholders.</p>
+    
     <div class="section">
       <h2 class="section-title">1. Build Your Prompt Template</h2>
       
@@ -508,9 +746,75 @@
     const resultArea = document.getElementById('resultArea');
     const advancedToggle = document.getElementById('advancedToggle');
     const advancedOptions = document.getElementById('advancedOptions');
+    const demoToggle = document.getElementById('demoToggle');
+    const demoContent = document.getElementById('demoContent');
+    
     advancedToggle.addEventListener('click', () => {
       advancedOptions.classList.toggle('show');
       advancedToggle.classList.toggle('active');
+    });
+    
+    demoToggle.addEventListener('click', () => {
+      demoContent.classList.toggle('show');
+      demoToggle.classList.toggle('active');
+    });
+    
+    // Intro navigation functionality
+    const introImage = document.getElementById('introImage');
+    const introCaption = document.getElementById('introCaption');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const stepDots = document.querySelectorAll('.step-dot');
+    const stepText = document.getElementById('stepText');
+    
+    const introSteps = [
+      {
+        image: 'intro1.png',
+        caption: 'Step 1: Create your prompt template with placeholders.'
+      },
+      {
+        image: 'intro2.gif',
+        caption: 'Step 2: When you click the bookmark, it automatically fills ChatGPT with your page URL and selected text.'
+      }
+    ];
+    
+    let currentStep = 0;
+    
+    function updateIntroStep(step) {
+      currentStep = step;
+      const stepData = introSteps[step];
+      
+      introImage.src = stepData.image;
+      introCaption.textContent = stepData.caption;
+      stepText.textContent = `Step ${step + 1} of ${introSteps.length}`;
+      
+      // Update step dots
+      stepDots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === step);
+      });
+      
+      // Update navigation buttons
+      prevBtn.disabled = step === 0;
+      nextBtn.disabled = step === introSteps.length - 1;
+    }
+    
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) {
+        updateIntroStep(currentStep - 1);
+      }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < introSteps.length - 1) {
+        updateIntroStep(currentStep + 1);
+      }
+    });
+    
+    // Click on step dots to navigate
+    stepDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        updateIntroStep(index);
+      });
     });
     function saveEditorSelection() {
       const sel = window.getSelection();
