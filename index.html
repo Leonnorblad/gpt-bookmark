@@ -460,12 +460,12 @@
       margin-top: 0.5rem;
       background: #1e293b;
       border-radius: 12px;
-      padding: 0.5rem;
+      padding: 1rem;
       border: 1px solid #334155;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       z-index: 100;
       width: 600px;
-      height: 500px;
+      height: 450px;
       flex-direction: column;
     }
     
@@ -482,22 +482,23 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      margin-bottom: 0.75rem;
     }
     
     .intro-container img {
       width: 100%;
       height: auto;
       display: block;
-      flex: 1;
       object-fit: contain;
+      max-height: 350px;
     }
     
     .intro-caption {
       padding: 0.75rem;
       background: #0f172a;
       border-top: 1px solid #334155;
-      font-size: 0.8rem;
-      color: #94a3b8;
+      font-size: 0.82rem;
+      color: #e2e8f0;
       text-align: center;
       flex-shrink: 0;
     }
@@ -506,61 +507,74 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem;
-      background: #0f172a;
-      border-top: 1px solid #334155;
+      gap: 1rem;
       flex-shrink: 0;
-    }
-    
-    .intro-nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.4rem 0.8rem;
-      background: transparent;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 0.75rem;
-      color: #94a3b8;
-    }
-    
-    .intro-nav-btn:hover {
-      border-color: #475569;
-      color: #e2e8f0;
-      background: #1e293b;
-    }
-    
-    .intro-nav-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    
-    .intro-nav-btn:disabled:hover {
-      border-color: #334155;
-      color: #94a3b8;
-      background: transparent;
     }
     
     .intro-step-indicator {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.75rem;
-      color: #94a3b8;
     }
     
     .step-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #334155;
-      transition: background 0.15s ease;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
     
     .step-dot.active {
       background: #6366f1;
+      transform: scale(1.3);
+    }
+    
+    .step-dot:hover:not(.active) {
+      background: #475569;
+      transform: scale(1.1);
+    }
+    
+    .intro-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.875rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      font-weight: 500;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+    
+    .intro-nav-btn:hover:not(:disabled) {
+      border-color: #6366f1;
+      background: #1e293b;
+      transform: translateY(-1px);
+    }
+    
+    .intro-nav-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .intro-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #0f172a;
+      border-color: #334155;
+      color: #64748b;
+    }
+    
+    .intro-nav-btn:disabled:hover {
+      transform: none;
+      border-color: #334155;
+      background: #0f172a;
     }
     
     /* Mobile responsiveness for demo content */
@@ -572,19 +586,26 @@
         left: 1rem;
       }
       
-      .intro-nav {
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem;
+      .intro-caption {
+        font-size: 0.85rem;
+        padding: 0.5rem;
       }
       
-      .intro-nav-btn {
-        width: 100%;
-        justify-content: center;
+      .intro-nav {
+        flex-direction: column;
+        gap: 0.5rem;
       }
       
       .intro-step-indicator {
         order: -1;
+        justify-content: center;
+      }
+      
+      .intro-nav-btn {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        justify-content: center;
       }
     }
     
@@ -657,14 +678,14 @@
       <div class="demo-section">
         <button class="demo-toggle" id="demoToggle">
           <span class="demo-icon">ℹ</span>
-          <span>More info</span>
+          <span>Info</span>
           <span class="demo-arrow">▼</span>
         </button>
         
         <div class="demo-content" id="demoContent">
           <div class="intro-container">
             <img id="introImage" src="imgs/intro1.png" alt="BookmarkGPT Intro" />
-            <div class="intro-caption" id="introCaption">Step 1: Create your prompt template with placeholders</div>
+            <div class="intro-caption" id="introCaption">Step 1: Create your prompt template with placeholders and give it a name.</div>
           </div>
           
           <div class="intro-nav">
@@ -813,7 +834,7 @@
     const introSteps = [
       {
         image: 'imgs/intro1.png',
-        caption: 'Step 1: Craft your prompt template with placeholders.'
+        caption: 'Step 1: Craft your prompt template with placeholders and give it a name.'
       },
       {
         image: 'imgs/intro2.gif',
