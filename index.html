@@ -413,6 +413,86 @@
       font-size: 0.9rem;
     }
     
+    /* Mobile bookmark styles */
+    .mobile-bookmark-container {
+      text-align: left;
+    }
+    
+    .mobile-bookmark-link {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .mobile-instructions {
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #334155;
+    }
+    
+    .mobile-instructions h4 {
+      margin: 0 0 1rem 0;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .instruction-steps {
+      margin-bottom: 1rem;
+    }
+    
+    .instruction-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+    
+    .instruction-step:hover {
+      background: #0f172a;
+    }
+    
+    .instruction-step:last-child {
+      margin-bottom: 0;
+    }
+    
+    .instruction-step .step-number {
+      width: 20px;
+      height: 20px;
+      background: #6366f1;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .instruction-step .step-text {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    
+    .mobile-note {
+      background: #0f172a;
+      border-radius: 6px;
+      padding: 0.75rem;
+      border: 1px solid #334155;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+    
+    .mobile-note strong {
+      color: #e2e8f0;
+    }
+    
     /* Demo GIF Section Styles */
     .demo-section {
       position: relative;
@@ -775,7 +855,7 @@
       <div class="result-area" id="resultArea">
         <span class="placeholder-text">Your bookmark will appear here</span>
       </div>
-      <p class="subtitle" style="margin-top: 1rem; margin-bottom: 0;">
+      <p class="subtitle" style="margin-top: 1rem; margin-bottom: 0;" id="instructionsText">
         Drag the bookmark to your bookmarks bar, then click it from any page (not a blank/new tab) – it will automatically ingest the page URL and any text you have highlighted, and always open ChatGPT in a new tab.
       </p>
     </div>
@@ -973,6 +1053,11 @@
       });
       return text;
     }
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+             (window.innerWidth <= 768 && window.innerHeight <= 1024);
+    }
+
     function generateBookmarklet() {
       const templateValue = getTemplateText().trim();
       if (!templateValue) {
@@ -981,6 +1066,16 @@
       }
       const temporaryChat = document.getElementById('temporaryChat').checked;
       const model = document.getElementById('modelSelect').value;
+      const name = (document.getElementById('bookmarkName')?.value || 'GPT prompt').trim();
+      
+      if (isMobile()) {
+        generateMobileBookmark(templateValue, temporaryChat, model, name);
+      } else {
+        generateDesktopBookmark(templateValue, temporaryChat, model, name);
+      }
+    }
+
+    function generateDesktopBookmark(templateValue, temporaryChat, model, name) {
       const code = `(function(){
   try{
     const url = window.location.href;
@@ -997,10 +1092,68 @@
   }catch(e){ alert('Error: '+e); }
 })();`;
       const href = "javascript:" + encodeURIComponent(code);
-      const name = (document.getElementById('bookmarkName')?.value || 'GPT prompt').trim();
       resultArea.innerHTML = `<a class="bookmarklet-link" href="${href}" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></a>`;
       resultArea.classList.add('has-result');
     }
+
+    function generateMobileBookmark(templateValue, temporaryChat, model, name) {
+      // Create a shareable link that can be saved as a bookmark
+      const baseUrl = 'https://chatgpt.com/?q=';
+      const prompt = templateValue
+        .replace(/{{url}}/g, '[URL]')
+        .replace(/{{selection}}/g, '[SELECTED_TEXT]');
+      
+      let url = baseUrl + encodeURIComponent(prompt);
+      if (temporaryChat) url += '&temporary-chat=true';
+      if (model !== 'auto') url += '&model=' + model;
+      
+      resultArea.innerHTML = `
+        <div class="mobile-bookmark-container">
+          <div class="mobile-bookmark-link">
+            <a href="${url}" target="_blank" class="bookmarklet-link">
+              <span>📱 ${escapeHtml(name)}</span>
+            </a>
+          </div>
+          <div class="mobile-instructions">
+            <h4>📱 Mobile Instructions:</h4>
+            <div class="instruction-steps">
+              <div class="instruction-step">
+                <span class="step-number">1</span>
+                <span class="step-text">Tap the link above to test it</span>
+              </div>
+              <div class="instruction-step">
+                <span class="step-number">2</span>
+                <span class="step-text">Long press the link and select "Add to Home Screen" or "Bookmark"</span>
+              </div>
+              <div class="instruction-step">
+                <span class="step-number">3</span>
+                <span class="step-text">Use the bookmark on any page - it will open ChatGPT with your template</span>
+              </div>
+            </div>
+            <div class="mobile-note">
+              <strong>Note:</strong> On mobile, you'll need to manually replace [URL] with the current page URL and [SELECTED_TEXT] with any highlighted text when using the bookmark.
+            </div>
+          </div>
+        </div>
+      `;
+      resultArea.classList.add('has-result');
+    }
+    // Update button text and instructions based on device type
+    function updateButtonText() {
+      const instructionsText = document.getElementById('instructionsText');
+      if (isMobile()) {
+        generateBtn.textContent = 'Generate Mobile Bookmark';
+        instructionsText.textContent = 'On mobile, the bookmark will be a shareable link. Follow the instructions that appear after generating to add it to your home screen or bookmarks.';
+      } else {
+        generateBtn.textContent = 'Generate Bookmark';
+        instructionsText.textContent = 'Drag the bookmark to your bookmarks bar, then click it from any page (not a blank/new tab) – it will automatically ingest the page URL and any text you have highlighted, and always open ChatGPT in a new tab.';
+      }
+    }
+    
+    // Update button text on load and resize
+    updateButtonText();
+    window.addEventListener('resize', updateButtonText);
+    
     generateBtn.addEventListener('click', generateBookmarklet);
     renderPlaceholders();
   </script>
