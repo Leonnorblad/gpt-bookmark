@@ -1,31 +1,44 @@
-# gpt-bookmark
+# GPT Bookmark Generator
 
-A simple static website hosted on GitHub Pages.
+A simple static web app that lets you generate **ChatGPT bookmark templates**.  
+With these bookmark templates, you can highlight text or capture the current page URL and instantly inject them into a custom GPT prompt.
 
-## Setup
+---
 
-This repository is configured to automatically deploy to GitHub Pages using GitHub Actions.
+## ✨ Features
 
-### How to Enable GitHub Pages
+- 📝 Build reusable **prompt templates**
+- 🔗 Auto-inserts dynamic variables:
+  - `{{page_url}}` → the current page’s URL
+  - `{{highlighted_text}}` → any selected text
+- ⚙️ Customization options:
+  - Bookmark name
+  - Model selection (GPT-4, GPT-3.5, o1, etc.)
+  - Temporary chat toggle
+  - Open in new window or tab
+- 📄 100% static — no backend, just a single HTML file
+- 🚀 Deployed automatically to **GitHub Pages**
 
-1. Go to your repository settings
-2. Navigate to "Pages" in the left sidebar
-3. Under "Build and deployment":
-   - Source: Select "GitHub Actions"
-4. The workflow will automatically deploy your site when you push to the `main` branch
+---
 
-### Accessing Your Site
+## 🔧 Usage
 
-Once deployed, your site will be available at:
-`https://<your-username>.github.io/gpt-bookmark/`
+1. Open the [deployed site](https://leonnorblad.github.io/gpt-bookmark/).
+2. Type your **prompt template** or click variables to insert them.
+3. Adjust advanced options if needed.
+4. Click **Generate bookmark template**.
+5. Drag the generated bookmarklet link to your bookmarks bar.
+6. Use it on any page → it will open ChatGPT with your prompt, filled in with the page context.
 
-### Editing the Content
+---
 
-- The main HTML file is `index.html`
-- Edit this file to customize your website content
-- Push changes to the `main` branch to update the live site
+## 🛠 Development
 
-### File Structure
+This project is a single-page static site:
 
-- `index.html` - Main HTML file for your website
-- `.github/workflows/static.yml` - GitHub Actions workflow for deployment
+- `index.html` → Main app (editor, variables, bookmarklet generator)
+- GitHub Actions workflow automatically builds and deploys on push to `main`
+
+To customize:
+- Edit `index.html` directly
+- Commit and push → changes will auto-deploy
