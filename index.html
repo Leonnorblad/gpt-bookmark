@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Prompt Bookmark Generator</title>
+  <title>BookmarkGPT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <style>
     * { box-sizing: border-box; }
     body { 
@@ -149,18 +150,18 @@
       font-size: 1.1rem;
     }
     
-    .variables-panel {
+    .placeholder-panel {
       position: sticky;
       top: 1rem;
     }
     
-    .variables-title {
+    .placeholder-title {
       font-size: 0.875rem;
       font-weight: 500;
       color: #cbd5e1;
       margin-bottom: 0.75rem;
     }
-    .variables-section-label {
+    .placeholder-section-label {
       font-size: 0.75rem;
       font-weight: 600;
       color: #94a3b8;
@@ -179,7 +180,7 @@
       color: #818cf8;
     }
     
-    .variable-list {
+    .placeholder-list {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
@@ -408,7 +409,7 @@
       .editor-layout {
         grid-template-columns: 1fr;
       }
-      .variables-panel {
+      .placeholder-panel {
         position: static;
       }
     }
@@ -416,8 +417,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>ChatGPT Template Bookmark</h1>
-    <p class="subtitle">Create smart bookmarks that inject page context into your GPT prompt templates</p>
+    <h1>BookmarkGPT</h1>
+    <p class="subtitle">Trun your GPT template into a bookmark with pre-filled placeholders.</p>
     <div class="section">
       <h2 class="section-title">1. Build Your Prompt Template</h2>
       
@@ -427,16 +428,16 @@
             id="editor" 
             class="editor-container" 
             contenteditable="true"
-            data-placeholder="Type your prompt or click variables to insert them..."
+            data-placeholder="Type your prompt or click placeholder to insert them..."
           ></div>
           <button class="clear-btn" id="clearBtn">Clear</button>
         </div>
         
-        <div class="variables-panel">          
-          <div class="variables-section-label">
-            <span>Variables</span>
+        <div class="placeholder-panel">          
+          <div class="placeholder-section-label">
+            <span>placeholder</span>
           </div>
-          <div class="variable-list" id="autoVariables"></div>
+          <div class="placeholder-list" id="placeholders"></div>
         </div>
       </div>
     </div>
@@ -495,13 +496,13 @@
         .replace(/"/g,'&quot;')
         .replace(/'/g,'&#39;');
     }
-    const AUTO_VARS = [
+    const PLACEHOLDERS = [
       { key: 'url', label: 'The URL of the current page' },
       { key: 'selection', label: 'Highlighted text on the current page' }
     ];
     let lastEditorRange = null;
     const editor = document.getElementById('editor');
-    const autoVariablesList = document.getElementById('autoVariables');
+    const PlaceholderList = document.getElementById('placeholders');
     const generateBtn = document.getElementById('generateBtn');
     const clearBtn = document.getElementById('clearBtn');
     const resultArea = document.getElementById('resultArea');
@@ -523,17 +524,16 @@
     ['keyup','mouseup','input','focus'].forEach(evt => {
       editor.addEventListener(evt, saveEditorSelection);
     });
-    function renderAutoVariables() {
-      autoVariablesList.innerHTML = AUTO_VARS.map(v =>
+    function renderPlaceholders() {
+      PlaceholderList.innerHTML = PLACEHOLDERS.map(v =>
         `<div class="var-btn" data-key="${v.key}">
           <span class="var-code">${v.key}</span>
           <span class="var-label">${v.label}</span>
         </div>`
       ).join('');
-      autoVariablesList.querySelectorAll('.var-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          insertPlaceholder(btn.dataset.key);
-        });
+
+      PlaceholderList.querySelectorAll('.var-btn').forEach(btn => {
+        btn.addEventListener('click', () => insertPlaceholder(btn.dataset.key));
       });
     }
     function insertPlaceholder(key) {
@@ -613,7 +613,7 @@
       const code = `(function(){
   try{
     const url = window.location.href;
-    const selection = window.getSelection().toString();
+    const selection = window.getSelection().toString() || '[No text selected]';
     const prompt = \`${templateValue.replace(/`/g,'\\`')}\`
       .replace(/{{url}}/g, url)
       .replace(/{{selection}}/g, selection);
@@ -631,7 +631,7 @@
       resultArea.classList.add('has-result');
     }
     generateBtn.addEventListener('click', generateBookmarklet);
-    renderAutoVariables();
+    renderPlaceholders();
   </script>
 </body>
 </html>
