@@ -73,6 +73,9 @@
     }
     
     .clear-btn {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
       padding: 0.5rem 0.875rem;
       background: transparent;
       border: 1px solid #334155;
@@ -81,6 +84,7 @@
       cursor: pointer;
       font-size: 0.85rem;
       transition: all 0.15s ease;
+      z-index: 10;
     }
     .clear-btn:hover {
       background: #0f172a;
@@ -412,28 +416,23 @@
 </head>
 <body>
   <div class="container">
-    <h1>Prompt Template Bookmark</h1>
+    <h1>ChatGPT Template Bookmark</h1>
     <p class="subtitle">Create smart bookmarks that inject page context into your GPT prompt templates</p>
     <div class="section">
-      <h2 class="section-title">Build Your Prompt Template</h2>
+      <h2 class="section-title">1. Build Your Prompt Template</h2>
       
       <div class="editor-layout">
         <div class="editor-wrapper">
-          <div class="editor-header">
-            <span class="editor-label">Your Prompt</span>
-            <button class="clear-btn" id="clearBtn">Clear</button>
-          </div>
           <div 
             id="editor" 
             class="editor-container" 
             contenteditable="true"
             data-placeholder="Type your prompt or click variables to insert them..."
           ></div>
+          <button class="clear-btn" id="clearBtn">Clear</button>
         </div>
         
-        <div class="variables-panel">
-          <div class="variables-title">Click to Insert</div>
-          
+        <div class="variables-panel">          
           <div class="variables-section-label">
             <span>Variables</span>
           </div>
@@ -442,11 +441,11 @@
       </div>
     </div>
     <div class="section">
-      <h2 class="section-title">Generate Bookmark</h2>
+      <h2 class="section-title">2. Preferences</h2>
       
       <div class="option-group">
-        <label class="option-label" for="bookmarkName">Bookmark Name</label>
-        <input type="text" id="bookmarkName" value="GPT prompt" placeholder="Bookmark name">
+        <label for="bookmarkName" class="option-label">Bookmark Name</label>
+        <input type="text" id="bookmarkName" name="bookmarkName" placeholder="Enter a bookmark name...">
       </div>
       <button class="advanced-toggle-btn" id="advancedToggle">Advanced Options</button>
       <div class="advanced-options" id="advancedOptions">
@@ -475,12 +474,18 @@
           </label>
         </div>
       </div>
-      <button class="generate-btn" id="generateBtn">Generate bookmark template</button>
+      <button class="generate-btn" id="generateBtn">Generate Bookmark</button>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title">3. Your Bookmark</h2>
       <div class="result-area" id="resultArea">
         <span class="placeholder-text">Your bookmark will appear here</span>
       </div>
+      <p class="subtitle" style="margin-top: 1rem; margin-bottom: 0;">
+        Drag the bookmark to your bookmarks bar, then click it from any page (not a blank/new tab) – it will automatically ingest the page URL and any text you have highlighted, and always open ChatGPT in a new tab.
+      </p>
     </div>
-  </div>
   <script>
     function escapeHtml(str){
       return String(str)
@@ -491,8 +496,8 @@
         .replace(/'/g,'&#39;');
     }
     const AUTO_VARS = [
-      { key: 'page_url', label: 'The full URL of the current page' },
-      { key: 'highlighted_text', label: 'Highlighted text on the current page' }
+      { key: 'url', label: 'The URL of the current page' },
+      { key: 'selection', label: 'Highlighted text on the current page' }
     ];
     let lastEditorRange = null;
     const editor = document.getElementById('editor');
@@ -603,24 +608,15 @@
         alert('Please enter a prompt template first!');
         return;
       }
-      const tplJSON = JSON.stringify(templateValue);
       const temporaryChat = document.getElementById('temporaryChat').checked;
       const model = document.getElementById('modelSelect').value;
       const code = `(function(){
   try{
-    const template = ${tplJSON};
     const url = window.location.href;
     const selection = window.getSelection().toString();
-    
-    const vars = {
-      page_url: url,
-      highlighted_text: selection
-    };
-    let prompt = template;
-    for (const k in vars) {
-      const re = new RegExp('\\\\{\\\\{'+k+'\\\\}\\\\}','g');
-      prompt = prompt.replace(re, String(vars[k] || ''));
-    }
+    const prompt = \`${templateValue.replace(/`/g,'\\`')}\`
+      .replace(/{{url}}/g, url)
+      .replace(/{{selection}}/g, selection);
     
     let u = 'https://chatgpt.com/?q='+encodeURIComponent(prompt);
     ${temporaryChat ? "u += '&temporary-chat=true';" : ""}
