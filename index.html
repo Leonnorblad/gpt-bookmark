@@ -580,10 +580,15 @@
     /* Mobile responsiveness for demo content */
     @media (max-width: 768px) {
       .demo-content {
+        position: absolute; /* anchor to the button container */
+        top: calc(100% + 0.5rem); /* open below the button */
+        right: 0; /* button is at right, so open leftwards from it */
+        left: auto;
         width: calc(100vw - 2rem);
-        height: 400px;
-        right: 1rem;
-        left: 1rem;
+        max-width: 600px;
+        height: auto;
+        max-height: 75vh;
+        overflow: auto;
       }
       
       .intro-caption {
