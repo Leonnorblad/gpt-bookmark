@@ -1002,7 +1002,12 @@
   }catch(e){ alert('Error: '+e); }
 })();`;
       const href = "javascript:" + encodeURIComponent(code);
-      const name = (document.getElementById('bookmarkName')?.value || 'GPT prompt').trim();
+      const nameInput = document.getElementById('bookmarkName');
+      const name = (nameInput?.value || '').trim();
+      if (!name) {
+        alert('Please enter a bookmark name!');
+        return;
+      }
       resultArea.innerHTML = `<a class="bookmarklet-link" href="${href}" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></a>`;
       resultArea.classList.add('has-result');
     }
